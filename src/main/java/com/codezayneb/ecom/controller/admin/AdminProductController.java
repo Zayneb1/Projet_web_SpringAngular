@@ -2,6 +2,9 @@ package com.codezayneb.ecom.controller.admin;
 
 
 import com.codezayneb.ecom.dto.ProductDto;
+import com.codezayneb.ecom.entity.Category;
+import com.codezayneb.ecom.entity.Product;
+import com.codezayneb.ecom.repository.CategoryRepository;
 import com.codezayneb.ecom.services.admin.adminproduct.AdminProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -19,6 +23,7 @@ import java.util.List;
 public class AdminProductController {
 
     private final AdminProductService adminProductService;
+    private final CategoryRepository categoryRepository;
 
     @PostMapping("/product")
     public ResponseEntity<ProductDto> addProduct(@ModelAttribute ProductDto productDto) throws IOException {
@@ -48,5 +53,26 @@ public class AdminProductController {
         }
         return ResponseEntity.notFound().build();
     }
+
+
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId) {
+        ProductDto productDto = adminProductService.getProductById(productId);
+        if(productDto != null){
+            return ResponseEntity.ok(productDto);
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/product/{productId}")
+public ResponseEntity<ProductDto> updateProduct(@PathVariable Long productId, @ModelAttribute ProductDto productDto) throws IOException {
+        ProductDto updatedProduct = adminProductService.updateProduct(productId, productDto);
+    if(updatedProduct != null){
+        return ResponseEntity.ok(productDto);
+    }else{
+        return ResponseEntity.notFound().build();
+    }
+}
 }
 
